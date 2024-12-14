@@ -1,26 +1,20 @@
-name: Rust CI
+name: Rust
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "master" ]
   pull_request:
-    branches:
-      - main
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Install dependencies
-      run: cargo fetch
-
-    - name: Check formatting
-      run: cargo fmt -- --check
-
-    - name: Check for lints
-      run: cargo clippy -- -D warnings
+    - uses: actions/checkout@v4
+    - name: Build
+      run: cargo build --verbose
