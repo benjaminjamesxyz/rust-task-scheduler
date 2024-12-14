@@ -1,87 +1,110 @@
-# Rust Task Scheduler
+# Rust Scheduler Library
 
-A priority-based task scheduler implemented in Rust, featuring support for periodic and one-time task execution using a binary heap. This project provides a simple yet flexible way to manage and execute tasks based on customizable priorities and intervals.
+This project is a Rust-based library designed for task scheduling, offering features such as priority scheduling and macro-based utilities for efficient and error-resistant task management.
 
 ## Features
 
-- **Priority-based execution**: Tasks with higher priorities are executed first.
-- **Periodic tasks**: Set intervals for tasks to run repeatedly.
-- **One-time tasks**: Execute tasks only once.
-- **Dynamic task addition**: Add tasks with different priorities and configurations during runtime.
-- **Efficient scheduling**: Uses a `BinaryHeap` for optimized priority handling.
+- **Task Abstraction**: Define and manage tasks easily using the `task.rs` module.
+- **Schedulers**: Multiple scheduling strategies, including:
+  - **Basic Scheduler**: Found in `scheduler.rs`, providing foundational scheduling logic.
+  - **Priority Scheduler**: Located in `algorithms/priority_scheduler.rs`, enabling priority-based task execution.
+- **Error Handling**: Robust error management utilities via the `error.rs` module.
+- **Macros**: Reusable macros defined in `macros.rs` to simplify repetitive coding tasks.
+- **Modular Design**: Clear modularity with a central `algorithms/mod.rs` file.
 
-## Usage
+## Getting Started
 
 ### Prerequisites
 
-- Install [Rust](https://www.rust-lang.org/) on your system.
+Ensure you have the following installed:
+- [Rust](https://www.rust-lang.org/tools/install) (latest stable version recommended)
 
-### Cloning the Repository
+### Installation
 
-```bash
-git clone https://github.com/your-username/rust-task-scheduler.git
-cd rust-task-scheduler
-```
+1. Clone the repository:
 
-### Running the Scheduler
+   ```bash
+   git clone https://github.com/benjaminjamesxyz/rust-task-scheduler.git
+   cd rust-task-scheduler
+   ```
 
-1. Open the `main` function in `src/main.rs` to customize the tasks.
-2. Run the project:
+2. Build the project:
 
-```bash
-cargo run
-```
+   ```bash
+   cargo build
+   ```
 
-### Example Output
+3. Run the tests:
 
-The following is an example of the scheduler in action:
+   ```bash
+   cargo test
+   ```
 
-```plaintext
-Task 3: Execute only once
-Task 2: 2 sec delay with prio level 1
-Task 4: 2 sec delay with prio level 1
-Task 1: Send ARP request
-```
+## Usage
 
-## Code Overview
-
-### Core Components
-
-- **`EventLoop`**:
-  - Manages the task queue and executes tasks based on priority and interval.
-
-- **`PriorityTask`**:
-  - Represents a task with metadata such as priority, interval, and execution status.
-
-- **`TaskBuilder`**:
-  - Provides a convenient API for creating tasks with various configurations.
-
-### Adding Tasks
-
-Tasks are added to the event loop using the `TaskBuilder` structure. Here's an example:
+### Define a Task
+Tasks can be defined using the `task.rs` module and the `TaskBuilder` pattern:
 
 ```rust
-let task = TaskBuilder::new(|| println!("Hello, World!"))
-    .with_interval(Duration::from_secs(10))
-    .with_priority(2);
-event_loop.add_task(task);
+use crate::task::{TaskBuilder, Frequency, Priority};
+
+let task = TaskBuilder::new()
+    .name("Example Task")
+    .frequency(Frequency::OneTime)
+    .priority(Priority::Level1)
+    .action(|| println!("Task executed"))
+    .build();
+```
+
+### Use the Scheduler
+
+#### Basic Scheduler
+
+```rust
+use crate::scheduler::Scheduler;
+use algorithms::PriorityScheduler;
+
+let mut scheduler = SchedulerBuilder::new()
+    .algorithm(Box::new(PriorityScheduler::new()))
+    .build();
+scheduler.add_task(task);
+scheduler.run();
+```
+
+## Project Structure
+
+```
+src
+├── algorithms
+│   ├── mod.rs                  # Central module for algorithms
+│   └── priority_scheduler.rs   # Priority-based scheduler
+├── error.rs                    # Error handling utilities
+├── macros.rs                   # Macro definitions
+├── main.rs                     # Entry point for the application
+├── scheduler.rs                # Base scheduler implementation
+└── task.rs                     # Task definition and management
 ```
 
 ## Contributing
 
-Contributions are welcome! If you have ideas for improvements or encounter issues, please:
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository.
-2. Create a new branch for your feature or fix.
-3. Submit a pull request with a detailed description.
+2. Create a new branch for your feature/bugfix:
+   ```bash
+   git checkout -b feat/feature-name
+   ```
+3. Commit your changes following conventional commit standards:
+   ```bash
+   git commit -m "feat: add new feature"
+   ```
+   Use prefixes like `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, etc., to indicate the type of change.
+4. Push to your branch:
+   ```bash
+   git push origin feat/feature-name
+   ```
+5. Open a pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For questions or feedback, feel free to reach out:
-
-- **Email**: benworksxyz-github@yahoo.com
-- **GitHub**: [benjaminjamesxyz](https://github.com/benjaminjamesxyz)
+This project is licensed under the [GPL v3 License](LICENSE).
